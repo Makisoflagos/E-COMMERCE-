@@ -8,6 +8,8 @@ export interface IUser extends mongoose.Document {
   otp: string | null;
   otpExpires: Date | null;
   isVerified: boolean;
+  isActive: boolean; 
+  role?: string;
   comparePassword: (password: string) => Promise<boolean>;
 }
 
@@ -17,7 +19,9 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   otp: { type: String, default: null},
   otpExpires: { type: Date, default: null},
-  isVerified: { type: Boolean, default: false }
+  isVerified: { type: Boolean, default: false },
+  isActive: { type: Boolean, default: true },
+  role: {type: String, enum: ["user", "admin"], default: "user"},
 }, { timestamps: true });
 
 userSchema.pre('save', async function(next) {

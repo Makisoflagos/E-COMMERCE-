@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import userRoutes from './routes/userRoutes';
 
 
 dotenv.config();
@@ -22,18 +23,13 @@ mongoose.connect(MONGO_URI)
 
 // Routes placeholder (to be implemented later)
 // app.use('/api/auth', require('./routes/auth'));
-// app.use('/api/users', require('./routes/users'));
+app.use('/api/users', userRoutes); // Use your user routes;
 // app.use('/api/products', require('./routes/products'));
 // app.use('/api/categories', require('./routes/categories'));
 // app.use('/api/stores', require('./routes/stores'));
 // app.use('/api/cart', require('./routes/cart'));
 // app.use('/api/orders', require('./routes/orders'));
 
-
-// app.use((err, req, res, next) => {
-//   console.error(err.stack);
-//   res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
-// });
 
 // Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
