@@ -6,7 +6,6 @@ import crypto from 'crypto';
 import Redis from 'ioredis';
 import { AuthError } from '../utils/errors/AuthError';
 import mongoose from 'mongoose';
-import * as authMiddleware from "../middleware/authMiddleware"
 
 config()
 const redis = new Redis({
@@ -271,6 +270,7 @@ export async function updateUserProfile(userId: string, updateData: Partial<IUse
       throw new UserError('Invalid user ID');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, isVerified, otp, otpExpires, ...safeUpdates } = updateData;
 
   if (safeUpdates.email) {
