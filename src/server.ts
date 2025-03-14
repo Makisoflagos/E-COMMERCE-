@@ -23,7 +23,7 @@ mongoose.connect(MONGO_URI)
 
 // Routes placeholder (to be implemented later)
 // app.use('/api/auth', require('./routes/auth'));
-app.use('/api/users', userRoutes); // Use your user routes;
+app.use('/users', userRoutes); // Use your user routes;
 // app.use('/api/products', require('./routes/products'));
 // app.use('/api/categories', require('./routes/categories'));
 // app.use('/api/stores', require('./routes/stores'));
