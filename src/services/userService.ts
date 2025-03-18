@@ -1,30 +1,18 @@
 import User, { IUser } from '../models/userModel';
 import jwt from 'jsonwebtoken';
-import nodemailer from 'nodemailer';
+import {sendMail} from "../utils/emailSender"
 import { config } from 'dotenv';
 import crypto from 'crypto';
 import Redis from 'ioredis';
 import { AuthError } from '../utils/errors/AuthError';
 import mongoose from 'mongoose';
 
+
 config()
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
   port: Number(process.env.REDIS_PORT) || 6379,
 }).on('error', console.error);
-
-const transporter = nodemailer.createTransport({
-
-  service: 'gmail',
-  auth: {
-  
-  user: process.env.EMAIL_USER,
-  
-  pass: process.env.EMAIL_PASS,
-  
-  },
-  
-  });
 
 export class UserError extends Error {
   statusCode: number;
@@ -36,14 +24,12 @@ export class UserError extends Error {
   }
 }
 
-// Constants
 const OTP_EXPIRY_MINUTES = 5;
 const JWT_EXPIRY_DAYS = '7d';
 const REDIS_KEY_PREFIXES = {
   TOKEN_BLACKLIST: 'token:blacklist:',
 };
 
-// Utility Functions
 export async function generateOTP(): Promise<string> {
   return (100000 + Math.floor(crypto.randomBytes(4).readUInt32BE(0) % 900000)).toString();
 }
@@ -53,11 +39,12 @@ export async function sendOTP(email: string, otp: string): Promise<void> {
       from: process.env.EMAIL_USER,
       to: email,
       subject: 'Account Verification Code',
+      text: "",
       html: `<p>Your verification code is: <strong>${otp}</strong>. It expires in ${OTP_EXPIRY_MINUTES} minutes.</p>`,
   };
 
   try {
-      await transporter.sendMail(mailOptions);
+      await sendMail(mailOptions);
   } catch (error) {
       console.error('Error sending OTP email:', error); // Log the error
       throw new AuthError('Failed to send verification email', 500);
@@ -171,11 +158,12 @@ export async function forgotPassword(email: string) {
       from: process.env.EMAIL_USER,
       to: user.email,
       subject: 'Password Reset Request',
+      text: "",
       html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link expires in 15 minutes.</p>`,
   };
 
   try {
-      await transporter.sendMail(mailOptions);
+      await sendMail(mailOptions);
   } catch (error) {
       console.error('Error sending reset email:', error);
       throw new AuthError('Failed to send password reset email', 500);
